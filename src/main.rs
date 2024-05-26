@@ -39,7 +39,6 @@ impl Config {
         let mut args: Vec<String> = Vec::with_capacity(10);
         let _ = split.next(); // Remove the program from the string
         loop {
-            println!("{:?}", args);
             if let Some(arg) = split.next() {
                 args.push(arg.to_string());
             } else {
