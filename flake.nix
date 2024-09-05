@@ -32,6 +32,7 @@
           src = ./.;
           cargoLock.lockFile = ./Cargo.lock;
           buildInputs = bi;
+          nativeBuildInputs = bi;
           LIBCLANG_PATH = clang_path;
         };
       in {
