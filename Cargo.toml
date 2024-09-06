@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-confy = "0.6.1"
+clap = { version = "4.5.17", features = ["derive"] }
 log = "0.4.22"
-serde = { version = "1.0.203", features = ["derive"] }
 simple-logging = "2.0.2"
 yubikey = "0.8.0"

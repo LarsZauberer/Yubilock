@@ -1,3 +1,4 @@
+use clap::Parser;
 use log::{debug, info};
 use std::process::Command;
 use yubikey::Serial;
@@ -9,13 +10,14 @@ fn main() {
     let _ = simple_logging::log_to_file("/home/lars/yubilock.log", log::LevelFilter::Debug);
 
     // Load config
-    let config: Config = confy::load("yubilock", None).unwrap();
-    info!("Loaded config!");
+    let config: Config = Config::parse();
+    info!("Loaded config: {:?}", config);
     debug!(
         "The command that will be executed is: `{} {:?}`",
         config.get_program(),
         config.get_args()
     );
+    debug!("Valid keys: {:?}", config.get_keys());
 
     if is_valid_yubikey_inserted(&config) {
         // Yubikey was found -> Kill the lock screen session
@@ -52,7 +54,7 @@ fn main() {
 
 fn is_valid_yubikey_inserted(config: &Config) -> bool {
     let mut found: bool = false;
-    for serial in &config.keys {
+    for serial in &config.get_keys() {
         if let Ok(_) = YubiKey::open_by_serial(Serial::from(serial.clone())) {
             // Found an authorized yubikey
             found = true;

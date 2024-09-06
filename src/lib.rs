@@ -1,20 +1,13 @@
-use serde::{Deserialize, Serialize};
+use clap::Parser;
+use log::warn;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Parser, Debug)]
+#[command(version)]
 pub struct Config {
-    pub sync_delay: u64,
+    #[arg(short = 'c', long = "cmd", default_value_t = String::from("swaylock"))]
     pub lock_cmd: String,
-    pub keys: Vec<u32>,
-}
-
-impl std::default::Default for Config {
-    fn default() -> Self {
-        Self {
-            sync_delay: 1000,
-            lock_cmd: "swaylock".to_string(),
-            keys: vec![],
-        }
-    }
+    #[arg(short = 'k', long = "keys", default_value_t = String::from(""))]
+    pub keys: String,
 }
 
 impl Config {
@@ -40,5 +33,22 @@ impl Config {
             }
         }
         args
+    }
+
+    pub fn get_keys(&self) -> Vec<u32> {
+        if self.keys == "" {
+            warn!("No valid key specified");
+            return vec![];
+        }
+        let split = self.keys.split(',');
+        let mut keys: Vec<u32> = Vec::with_capacity(10);
+        for i in split {
+            if let Ok(key) = u32::from_str_radix(i, 10) {
+                keys.push(key);
+            } else {
+                panic!("The key {} is an invalid key", i);
+            }
+        }
+        keys
     }
 }
