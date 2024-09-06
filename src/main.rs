@@ -23,6 +23,7 @@ fn main() {
             "Valid yubikey found -> Killing locker {}",
             config.get_program()
         );
+        info!("Valid yubikey found");
         let locker = config.get_program();
         Command::new("pkill")
             .arg("--signal")
@@ -36,12 +37,14 @@ fn main() {
             "No valid yubikey was found -> Spawning the locker {}",
             config.get_program()
         );
+        info!("No valid yubikey was found");
         let locker = config.get_program();
         let locker_args = config.get_args();
         let mut c = Command::new(locker);
         for i in locker_args {
             c.arg(i);
         }
+        debug!("Before executing the locker");
         let locker_out = c.output().expect("Error while running");
         info!("Locker Output: {:?}", locker_out);
     }
