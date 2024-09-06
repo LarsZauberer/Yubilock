@@ -5,5 +5,7 @@ edition = "2021"
 
 [dependencies]
 confy = "0.6.1"
+log = "0.4.22"
 serde = { version = "1.0.203", features = ["derive"] }
+simple-logging = "2.0.2"
 yubikey = "0.8.0"

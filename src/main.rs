@@ -1,11 +1,21 @@
+use log::{debug, info};
 use std::process::Command;
 use yubikey::Serial;
 use yubikey::YubiKey;
 use yubilock::Config;
 
 fn main() {
+    // Logger init
+    let _ = simple_logging::log_to_file("/home/lars/yubilock.log", log::LevelFilter::Debug);
+
     // Load config
     let config: Config = confy::load("yubilock", None).unwrap();
+    info!("Loaded config!");
+    debug!(
+        "The command that will be executed is: `{} {:?}`",
+        config.get_program(),
+        config.get_args()
+    );
 
     if is_valid_yubikey_inserted(&config) {
         // Yubikey was found -> Kill the lock screen session
@@ -32,7 +42,8 @@ fn main() {
         for i in locker_args {
             c.arg(i);
         }
-        let _ = c.output().expect("Error while running");
+        let locker_out = c.output().expect("Error while running");
+        info!("Locker Output: {:?}", locker_out);
     }
 }
 
@@ -42,6 +53,7 @@ fn is_valid_yubikey_inserted(config: &Config) -> bool {
         if let Ok(_) = YubiKey::open_by_serial(Serial::from(serial.clone())) {
             // Found an authorized yubikey
             found = true;
+            debug!("Found Yubikey with serial {}", serial);
             break;
         }
     }
